@@ -1,0 +1,628 @@
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relationship Check-In Structure</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f0f7fc 0%, #e8f4fc 50%, #f5f0fc 100%);
+      min-height: 100vh;
+      color: #2c3e50;
+    }
+    
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(135deg, #e8f4fc 0%, #f0f7fc 100%);
+      border-radius: 24px;
+      border: 2px solid #b3d9f2;
+      box-shadow: 0 8px 24px rgba(123, 168, 209, 0.15);
+    }
+    
+    .header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #5a9dd4 0%, #8fbbdc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .header p {
+      margin: 0;
+      font-size: 14px;
+      color: #5a9dd4;
+      font-weight: 500;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #d4e8f5;
+      padding-bottom: 12px;
+    }
+    
+    .tab-btn {
+      padding: 10px 18px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      color: #7a9fb8;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      font-weight: 600;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .tab-btn.active {
+      color: #5a9dd4;
+      border-bottom-color: #5a9dd4;
+      background: rgba(147, 197, 240, 0.1);
+    }
+    
+    .tab-btn:hover {
+      color: #5a9dd4;
+      background: rgba(147, 197, 240, 0.08);
+    }
+    
+    .view {
+      display: none;
+    }
+    
+    .view.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #f8fbfe 0%, #f5f8fc 100%);
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 2px solid #d4e8f5;
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.08);
+    }
+    
+    .rule {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e8f1f8;
+      transition: all 0.2s;
+    }
+    
+    .rule:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.12);
+      border-color: #c5dff0;
+    }
+    
+    .rule-number {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #93c5f0 0%, #7ba8d1 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(123, 168, 209, 0.25);
+    }
+    
+    .rule-text {
+      flex: 1;
+      color: #2c3e50;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    
+    .step-card {
+      background: white;
+      border: 2px solid #d4e8f5;
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.08);
+    }
+    
+    .step-card:hover {
+      border-color: #93c5f0;
+      background: linear-gradient(135deg, #f8fbfe 0%, #f5f8fc 100%);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(123, 168, 209, 0.15);
+    }
+    
+    .step-card.expanded {
+      border-color: #5a9dd4;
+      background: linear-gradient(135deg, #f8fbfe 0%, #f5f8fc 100%);
+      box-shadow: 0 8px 20px rgba(123, 168, 209, 0.15);
+    }
+    
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #93c5f0 0%, #7ba8d1 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.25);
+    }
+    
+    .step-title {
+      flex: 1;
+      font-weight: 700;
+      font-size: 16px;
+      color: #2c3e50;
+    }
+    
+    .expand-icon {
+      color: #93c5f0;
+      font-size: 16px;
+      transition: transform 0.3s;
+      font-weight: bold;
+    }
+    
+    .step-card.expanded .expand-icon {
+      transform: rotate(180deg);
+      color: #5a9dd4;
+    }
+    
+    .step-duration {
+      font-size: 11px;
+      color: #7ba8d1;
+      background: linear-gradient(135deg, #e8f4fc 0%, #f0f7fc 100%);
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin: 0 8px;
+      font-weight: 600;
+      border: 1px solid #d4e8f5;
+    }
+    
+    .step-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .step-card.expanded .step-content {
+      max-height: 600px;
+    }
+    
+    .step-detail {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 2px solid #e8f1f8;
+    }
+    
+    .step-detail h4 {
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5a9dd4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .step-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .step-item {
+      font-size: 14px;
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-left: 8px;
+      font-weight: 500;
+    }
+    
+    .step-item:before {
+      content: "✨";
+      margin-right: 8px;
+      font-size: 12px;
+    }
+    
+    .guided-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .guided-step {
+      background: linear-gradient(135deg, #f8fbfe 0%, #f5f8fc 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 2px solid #d4e8f5;
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.08);
+      transition: all 0.3s;
+    }
+    
+    .guided-step:hover {
+      border-color: #93c5f0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(123, 168, 209, 0.12);
+    }
+    
+    .guided-step h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    
+    .guided-step p {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      color: #5a7a8f;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    
+    .timer-box {
+      background: linear-gradient(135deg, #e8f4fc 0%, #f0f7fc 100%);
+      border: 2px solid #93c5f0;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #5a9dd4;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(123, 168, 209, 0.1);
+    }
+    
+    .info-box {
+      background: linear-gradient(135deg, #e8f9ff 0%, #f0f7fc 100%);
+      border-left: 4px solid #5a9dd4;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: #2c3e50;
+      line-height: 1.7;
+      border: 2px solid #d4e8f5;
+    }
+    
+    .info-box strong {
+      color: #5a9dd4;
+      font-weight: 700;
+    }
+    
+    .flow-diagram {
+      display: flex;
+      gap: 12px;
+      margin: 1.5rem 0;
+      align-items: center;
+      overflow-x: auto;
+      padding: 16px 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .flow-box {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #e8f4fc 0%, #f0f7fc 100%);
+      border: 2px solid #93c5f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #5a9dd4;
+      box-shadow: 0 3px 10px rgba(123, 168, 209, 0.15);
+      transition: all 0.2s;
+    }
+    
+    .flow-box:hover {
+      background: linear-gradient(135deg, #d4e8f5 0%, #e8f4fc 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(123, 168, 209, 0.2);
+    }
+    
+    .flow-arrow {
+      flex-shrink: 0;
+      color: #93c5f0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    
+    .core-idea {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #e8f9ff 0%, #f0f7fc 100%);
+      border-radius: 16px;
+      border-left: 4px solid #5a9dd4;
+      border: 2px solid #d4e8f5;
+      box-shadow: 0 4px 12px rgba(123, 168, 209, 0.08);
+    }
+    
+    .core-idea p {
+      margin: 0;
+      font-size: 14px;
+      color: #2c3e50;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    
+    .core-idea strong {
+      color: #5a9dd4;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💙 Relationship Check-In</h1>
+      <p>A framework for deep connection without defensiveness</p>
+    </div>
+    
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchView('structure')">Structure</button>
+      <button class="tab-btn" onclick="switchView('guided')">Guided Mode</button>
+      <button class="tab-btn" onclick="switchView('rules')">Rules</button>
+    </div>
+    
+    <!-- Structure View -->
+    <div id="structure" class="view active">
+      <div class="flow-diagram">
+        <div class="flow-box">Appreciation</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Check-in</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Reflection</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Solutions</div>
+      </div>
+      
+      <div class="steps-container">
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">1</div>
+            <div class="step-title">Appreciation</div>
+            <div class="step-duration">5-10 min</div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="step-content">
+            <div class="step-detail">
+              <h4>Start with gratitude</h4>
+              <div class="step-items">
+                <div class="step-item">One thing we appreciated this week</div>
+                <div class="step-item">One thing the other person did well</div>
+                <div class="step-item">One thing we're grateful for</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">2</div>
+            <div class="step-title">Check-in</div>
+            <div class="step-duration">15-30 min</div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="step-content">
+            <div class="step-detail">
+              <h4>Share and listen</h4>
+              <div class="step-items">
+                <div class="step-item">How we've been feeling lately</div>
+                <div class="step-item">Anything that felt difficult</div>
+                <div class="step-item">Anything unresolved</div>
+              </div>
+              <p style="margin-top: 12px; font-size: 13px; color: #5a7a8f; font-style: italic;">Goal: understand each other, not fix everything immediately</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">3</div>
+            <div class="step-title">Reflection</div>
+            <div class="step-duration">several days</div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="step-content">
+            <div class="step-detail">
+              <h4>Process together</h4>
+              <div class="step-items">
+                <div class="step-item">Process emotions on your own</div>
+                <div class="step-item">Think about solutions</div>
+                <div class="step-item">Understand each other better</div>
+              </div>
+              <p style="margin-top: 12px; font-size: 13px; color: #5a7a8f; font-style: italic;">No pressure for immediate answers</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="step-card" onclick="toggleStep(this)">
+          <div class="step-header">
+            <div class="step-number">4</div>
+            <div class="step-title">Solution Conversation</div>
+            <div class="step-duration">later in the week</div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="step-content">
+            <div class="step-detail">
+              <h4>Work as a team</h4>
+              <div class="step-items">
+                <div class="step-item">Discuss possible solutions</div>
+                <div class="step-item">Explore compromises</div>
+                <div class="step-item">Plan small actions together</div>
+                <div class="step-item">Offer support</div>
+              </div>
+              <p style="margin-top: 12px; font-size: 13px; color: #5a7a8f; font-style: italic;">Working together against the problem, not against each other</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Guided Mode -->
+    <div id="guided" class="view">
+      <div class="guided-container">
+        <div class="guided-step">
+          <h3>✨ Step 1: Appreciation (5-10 minutes)</h3>
+          <p>Begin together with warmth. Each person shares:</p>
+          <div class="step-items" style="margin-bottom: 12px;">
+            <div class="step-item">One thing I appreciated about you this week</div>
+            <div class="step-item">One thing you did well</div>
+            <div class="step-item">One thing I'm grateful for</div>
+          </div>
+          <div class="timer-box">
+            ⏱️ Set a gentle timer: 5-10 minutes total
+          </div>
+        </div>
+        
+        <div class="guided-step">
+          <h3>💬 Step 2: Check-in (15-30 minutes)</h3>
+          <p>Take turns sharing without interruption. Remember the rules as you listen.</p>
+          <div class="step-items" style="margin-bottom: 12px;">
+            <div class="step-item">How have I been feeling lately?</div>
+            <div class="step-item">What felt difficult this week?</div>
+            <div class="step-item">Is there anything unresolved?</div>
+          </div>
+          <div class="info-box">
+            <strong>Listen fully before responding.</strong> The goal is understanding, not solving. If either person feels overwhelmed, it's OK to pause—you can come back later.
+          </div>
+        </div>
+        
+        <div class="guided-step">
+          <h3>🤔 Step 3: Reflection (a few days)</h3>
+          <p>After the check-in, give yourselves space to think.</p>
+          <div class="step-items" style="margin-bottom: 12px;">
+            <div class="step-item">Process your emotions on your own</div>
+            <div class="step-item">Think about possible solutions</div>
+            <div class="step-item">Let understanding deepen</div>
+          </div>
+          <div class="timer-box">
+            No pressure for immediate answers. Give it a few days.
+          </div>
+        </div>
+        
+        <div class="guided-step">
+          <h3>🤝 Step 4: Solution Conversation</h3>
+          <p>Later in the week or next weekend, come back together with fresh perspective.</p>
+          <div class="step-items" style="margin-bottom: 12px;">
+            <div class="step-item">Discuss possible solutions together</div>
+            <div class="step-item">Explore compromises</div>
+            <div class="step-item">Decide on small actions you can both take</div>
+            <div class="step-item">Offer support to each other</div>
+          </div>
+          <div class="info-box">
+            Remember: <strong>the relationship is the problem, not each other.</strong> You're working as a team.
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Rules View -->
+    <div id="rules" class="view">
+      <h2 style="margin: 0 0 1.5rem 0; font-size: 20px; font-weight: 700; color: #2c3e50;">The 7 Rules for Every Check-in</h2>
+      <div class="rules-grid">
+        <div class="rule">
+          <div class="rule-number">1</div>
+          <div class="rule-text">We listen fully before responding</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">2</div>
+          <div class="rule-text">No interrupting</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">3</div>
+          <div class="rule-text">No sarcasm or attacking each other</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">4</div>
+          <div class="rule-text">Speak from feelings, not blame ("I felt…" instead of "You always…")</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">5</div>
+          <div class="rule-text">We are not trying to win, we are trying to understand each other</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">6</div>
+          <div class="rule-text">Pause is allowed if someone feels overwhelmed, but we come back later</div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">7</div>
+          <div class="rule-text">The relationship is the problem, not each other</div>
+        </div>
+      </div>
+      
+      <div class="core-idea">
+        <p>
+          <strong>The core idea:</strong> Separate check-in from problem-solving so you can stay emotionally grounded and not become defensive. This structure creates safety and understanding first.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function switchView(viewName) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewName).classList.add('active');
+      
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+    
+    function toggleStep(card) {
+      card.classList.toggle('expanded');
+    }
+  </script>
+</body>
+</html>
